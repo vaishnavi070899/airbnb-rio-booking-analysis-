@@ -42,16 +42,6 @@ All data provided in this [link](airbnb_1):
 - High-impact recommendations for product and operations teams
 
 ---
-
-### 🚀 How to Use
-
-1. Clone this repository
-2. Install dependencies with `pip install -r requirements.txt`
-3. Run the notebook in `notebooks/` to explore or rerun analysis
-4. View the presentation and appendix PDFs for summarized insights
-
----
-
 ### 📌 Key Technologies
 
 - Python (Pandas, Seaborn, Matplotlib)

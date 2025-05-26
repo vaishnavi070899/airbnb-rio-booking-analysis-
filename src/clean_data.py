@@ -1,25 +1,49 @@
 # src/clean_data.py
-
 import pandas as pd
 
 def clean_contacts(df):
     """
-    Clean and enrich contacts dataset with new derived columns:
+    Clean and enrich contacts dataset with:
     - Booking flag
-    - Response/acceptance times
-    - Funnel stage (categorical)
+    - Response and acceptance times (Timedelta and hours)
     """
+
+    # Safe datetime parsing
+    datetime_cols = [
+        'ts_booking_at',
+        'ts_reply_at_first',
+        'ts_interaction_first',
+        'ts_accepted_at_first',
+    ]
+    for col in datetime_cols:
+        df[col] = pd.to_datetime(df[col], errors='coerce')
+
     # Booking flag
     df['booking_happened'] = df['ts_booking_at'].notna()
 
-    # Time deltas (in hours)
-    df['response_time_hours'] = (
-        df['ts_reply_at_first'] - df['ts_interaction_first']
-    ).dt.total_seconds() / 3600
+    # Compute Timedelta safely: result is NaT if any input is NaT
+    def compute_timedelta(row, later_col, earlier_col):
+        if pd.isna(row[later_col]) or pd.isna(row[earlier_col]):
+            return pd.NaT
+        else :
+            return row[later_col] - row[earlier_col]
 
-    df['accept_time_hours'] = (
-        df['ts_accepted_at_first'] - df['ts_interaction_first']
-    ).dt.total_seconds() / 3600
+    df['response_time'] = df.apply(
+        lambda row: compute_timedelta(row, 'ts_reply_at_first', 'ts_interaction_first'),
+        axis=1
+    )
+
+    df['accept_time'] = df.apply(
+        lambda row: compute_timedelta(row, 'ts_accepted_at_first', 'ts_interaction_first'),
+        axis=1
+    )
+
+    # Compute hours directly during the same process
+    def compute_hours(td):
+        return pd.NaT if pd.isna(td) else td.total_seconds() / 3600
+
+    df['response_time_hours'] = df['response_time'].apply(compute_hours)
+    df['accept_time_hours'] = df['accept_time'].apply(compute_hours)
 
     # Booking funnel stage
     def determine_stage(row):

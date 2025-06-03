@@ -40,7 +40,8 @@ def plot_booking_rate_by_room_type(df_contacts, df_listings, save_path=None):
     plt.show()
 
 
-def plot_response_time_distribution(df, save_path=None):
+def plot_response_time_distribution(df, save_path=None, max_hours=72):
+    filtered = df[df['response_time_hours'] <= max_hours]
     sns.histplot(df['response_time_hours'].dropna(), bins=30, kde=True, color='teal')
     plt.title("Distribution of Host Response Times")
     plt.xlabel("Response Time (Hours)")

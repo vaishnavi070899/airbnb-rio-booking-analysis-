@@ -2,16 +2,16 @@
 
 def generate_recommendations(metrics, funnel_by_channel, room_type_conversion, user_stage_conversion):
     """
-    Generate strategic recommendations based on key findings.
-    Returns a dictionary of insight + recommendation pairs.
-    
-    Parameters:
-    - metrics: dict with overall metrics
-    - funnel_by_channel: DataFrame
-    - room_type_conversion: Series
-    - user_stage_conversion: Series
+    Generates actionable recommendations and insights based on booking funnel metrics, room type conversion rates,
+    user stage conversion rates, and average response time.
+    Args:
+        metrics (dict): Dictionary containing overall booking metrics, including 'booking_rate' (float) and 'avg_response_time' (float, in hours).
+        funnel_by_channel (pandas.Series): Series indexed by booking channel (e.g., 'instant_book') with corresponding conversion rates (float).
+        room_type_conversion (pandas.Series): Series indexed by room type (e.g., 'entire home', 'private room') with corresponding booking rates (float).
+        user_stage_conversion (dict): Dictionary with user stages as keys (e.g., 'new', 'past booker') and their conversion rates (float).
+    Returns:
+        list of dict: A list of recommendations, each as a dictionary with 'insight' and 'recommendation' keys.
     """
-
     recommendations = []
 
     # 1. Instant Book performance
